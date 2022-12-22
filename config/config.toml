@@ -1,0 +1,12 @@
+#Локальный конфиг
+
+#Хост и порт приложения
+
+ServiceHost = "0.0.0.0"
+ServicePort = 80
+
+# НАСТРОЙКИ РЕДИСКИ
+[Redis]
+
+DialTimeout = "10s"
+ReadTimeout = "10s"
