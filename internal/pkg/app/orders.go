@@ -116,3 +116,22 @@ func (a *Application) ChangeStatus(gCtx *gin.Context) {
 		})
 
 }
+
+func (a *Application) GetOrdersByUser(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
+	resp, err := a.repo.GetOrdersByUser(userUUID)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "can`t get a list",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
+			})
+		return
+	}
+	gCtx.JSON(http.StatusOK, resp)
+
+}

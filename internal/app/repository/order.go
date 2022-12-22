@@ -45,6 +45,9 @@ func (r *Repository) GetOrders(stDate, endDate, status string) ([]ds.Order, erro
 	var err error
 	st, _ := url.QueryUnescape(status)
 	log.Println(st)
+	if st == "Все статусы" {
+		st = ""
+	}
 	if st == "" {
 		if stDate == "" && endDate == "" {
 			err = r.db.Order("date").Find(&orders).Error
@@ -93,4 +96,11 @@ func (r *Repository) ChangeStatus(uuid uuid.UUID, status string) (int, error) {
 		return 500, err
 	}
 	return 0, nil
+}
+
+func (r *Repository) GetOrdersByUser(uuid uuid.UUID) ([]ds.Order, error) {
+	var orders []ds.Order
+	err := r.db.Where("user_uuid = ?", uuid).Order("date").Find(&orders).Error
+	log.Println(orders)
+	return orders, err
 }

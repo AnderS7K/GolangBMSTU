@@ -44,9 +44,10 @@ func (a *Application) StartServer() {
 	r.DELETE("/cart/:uuid", a.DeleteFromCart)
 
 	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/cart", a.GetCart)
+	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/user_orders", a.GetOrdersByUser)
+	r.Use(a.WithAuthCheck(role.Buyer, role.Manager)).GET("/user/:uuid", a.GetUser)
 	r.Use(a.WithAuthCheck(role.Manager)).POST("/pizzas", a.AddPizza)
 	r.Use(a.WithAuthCheck(role.Manager)).GET("/orders", a.GetOrders)
-	r.Use(a.WithAuthCheck(role.Manager)).GET("/user/:uuid", a.GetUser)
 	r.Use(a.WithAuthCheck(role.Manager)).PUT("/orders/:uuid", a.ChangeStatus)
 	r.Use(a.WithAuthCheck(role.Manager)).DELETE("/pizzas/:uuid", a.DeletePizza)
 	r.Use(a.WithAuthCheck(role.Manager)).PUT("/pizzas/:uuid", a.ChangePizza)
