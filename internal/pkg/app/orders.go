@@ -118,10 +118,14 @@ func (a *Application) ChangeStatus(gCtx *gin.Context) {
 }
 
 func (a *Application) GetOrdersByUser(gCtx *gin.Context) {
+	stDate := gCtx.Query("start_date")
+	endDate := gCtx.Query("end_date")
+	status := gCtx.Query("status")
+
 	jwtStr := gCtx.GetHeader("Authorization")
 	userUUID := a.GetUserByToken(jwtStr)
 
-	resp, err := a.repo.GetOrdersByUser(userUUID)
+	resp, err := a.repo.GetOrdersByUser(userUUID, stDate, endDate, status)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,

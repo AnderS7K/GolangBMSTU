@@ -98,9 +98,43 @@ func (r *Repository) ChangeStatus(uuid uuid.UUID, status string) (int, error) {
 	return 0, nil
 }
 
-func (r *Repository) GetOrdersByUser(uuid uuid.UUID) ([]ds.Order, error) {
+func (r *Repository) GetOrdersByUser(uuid uuid.UUID, stDate, endDate, status string) ([]ds.Order, error) {
 	var orders []ds.Order
-	err := r.db.Where("user_uuid = ?", uuid).Order("date").Find(&orders).Error
-	log.Println(orders)
-	return orders, err
+	var err error
+	st, _ := url.QueryUnescape(status)
+	log.Println(st)
+	if st == "Все статусы" {
+		st = ""
+	}
+	if st == "" {
+		if stDate == "" && endDate == "" {
+			err = r.db.Where("user_uuid = ?", uuid).Order("date").Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate == "" {
+			err = r.db.Order("date").Where("date > ? and user_uuid = ?", stDate, uuid).Find(&orders).Error
+			return orders, err
+		} else if stDate == "" && endDate != "" {
+			err = r.db.Order("date").Where("date < ? and user_uuid = ?", endDate, uuid).Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate != "" {
+			err = r.db.Order("date").Where("date > ? and date < ? and user_uuid = ?", stDate, endDate, uuid).Find(&orders).Error
+			return orders, err
+		}
+	} else {
+		if stDate == "" && endDate == "" {
+			err = r.db.Order("date").Where("status = ? and user_uuid = ?", st, uuid).Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate == "" {
+			err = r.db.Order("date").Where("date > ? and status = ? and user_uuid = ?", stDate, st, uuid).Find(&orders).Error
+			return orders, err
+		} else if stDate == "" && endDate != "" {
+			err = r.db.Order("date").Where("date < ? and status = ? and user_uuid = ?", endDate, st, uuid).Find(&orders).Error
+			return orders, err
+		} else if stDate != "" && endDate != "" {
+			err = r.db.Order("date").Where("date > ? and date < ? and status = ? and user_uuid = ?", stDate, endDate, st, uuid).Find(&orders).Error
+			return orders, err
+		}
+	}
+
+	return orders, nil
 }
