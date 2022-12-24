@@ -118,7 +118,7 @@ export function OrderPage() {
                 </div>
                 </div>
                 <div className="px-2 sm:px-0 pt-5 flex flex-col gap-0 mx-auto container">
-                    <div className="border-2 border-slate-300 -mb-1 rounded py-2  grid grid-cols-4">
+                    <div className="border-2 border-slate-300 -mb-1 rounded py-2  grid grid-cols-5">
                         <p className="place-self-center text-lg font-bold">
                             Пиццы
                         </p>
@@ -136,6 +136,12 @@ export function OrderPage() {
                         <div className="place-self-center text-lg font-bold">
                             <p className="place-self-center text-lg font-bold">
                                 Статус
+                            </p>
+                        </div>
+
+                        <div className="place-self-center text-lg font-bold">
+                            <p className="place-self-center text-lg font-bold">
+                                Изменить статус
                             </p>
                         </div>
                     </div>

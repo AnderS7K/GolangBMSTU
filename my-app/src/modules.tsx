@@ -25,7 +25,7 @@ export function getRole(token: string) {
         }}).then(r => r.data)
 }
 
-export function updateStatus(token: string, uuid: string, status: string) {
+export function updateStatus(token: string, uuid: string, status: string | undefined) {
     const body = { Status: status }
     return axios.put(`${ENDPOINT}/orders/${uuid}`, body,{withCredentials: true, headers: {
             "Authorization": `Bearer ${token}`
