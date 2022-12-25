@@ -25,7 +25,7 @@ func (r *Repository) AddOrder(order ds.Order) error {
 	order.Pizzas = names
 	//date := time.Now().Add(time.Hour * 3)
 	var err error
-	order.Date = time.Now() //, err = time.Parse("2006-01-02 15:04:05", date.Format("2006-01-02 15:04:05"))
+	order.DateCreated = time.Now() //, err = time.Parse("2006-01-02 15:04:05", date.Format("2006-01-02 15:04:05"))
 	order.Status = "Оформлен"
 	log.Println(order)
 
@@ -50,30 +50,30 @@ func (r *Repository) GetOrders(stDate, endDate, status string) ([]ds.Order, erro
 	}
 	if st == "" {
 		if stDate == "" && endDate == "" {
-			err = r.db.Order("date").Find(&orders).Error
+			err = r.db.Order("date_created").Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate == "" {
-			err = r.db.Order("date").Where("date > ?", stDate).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ?", stDate).Find(&orders).Error
 			return orders, err
 		} else if stDate == "" && endDate != "" {
-			err = r.db.Order("date").Where("date < ?", endDate).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created < ?", endDate).Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate != "" {
-			err = r.db.Order("date").Where("date > ? and date < ?", stDate, endDate).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ? and date_created < ?", stDate, endDate).Find(&orders).Error
 			return orders, err
 		}
 	} else {
 		if stDate == "" && endDate == "" {
-			err = r.db.Order("date").Where("status = ?", st).Find(&orders).Error
+			err = r.db.Order("date_created").Where("status = ?", st).Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate == "" {
-			err = r.db.Order("date").Where("date > ? and status = ?", stDate, st).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ? and status = ?", stDate, st).Find(&orders).Error
 			return orders, err
 		} else if stDate == "" && endDate != "" {
-			err = r.db.Order("date").Where("date < ? and status = ?", endDate, st).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created < ? and status = ?", endDate, st).Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate != "" {
-			err = r.db.Order("date").Where("date > ? and date < ? and status = ?", stDate, endDate, st).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ? and date_created < ? and status = ?", stDate, endDate, st).Find(&orders).Error
 			return orders, err
 		}
 	}
@@ -90,8 +90,13 @@ func (r *Repository) ChangeStatus(uuid uuid.UUID, status string) (int, error) {
 		}
 		return 500, err
 	}
-	err = r.db.Model(&order).Update("Status", status).Error
-	//if errors.Is(err, gorm.ErrRecordNotFound)
+	if status == "Оплачен" {
+		err = r.db.Model(&order).Updates(ds.Order{DatePayed: time.Now(), Status: status}).Error
+	} else if status == "Передан в доставку" {
+		err = r.db.Model(&order).Updates(ds.Order{DateDeliveredStart: time.Now(), Status: status}).Error
+	} else if status == "Доставлен" {
+		err = r.db.Model(&order).Updates(ds.Order{DateDeliveredEnd: time.Now(), Status: status}).Error
+	}
 	if err != nil {
 		return 500, err
 	}
@@ -108,30 +113,30 @@ func (r *Repository) GetOrdersByUser(uuid uuid.UUID, stDate, endDate, status str
 	}
 	if st == "" {
 		if stDate == "" && endDate == "" {
-			err = r.db.Where("user_uuid = ?", uuid).Order("date").Find(&orders).Error
+			err = r.db.Order("date_created").Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate == "" {
-			err = r.db.Order("date").Where("date > ? and user_uuid = ?", stDate, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ?", stDate).Find(&orders).Error
 			return orders, err
 		} else if stDate == "" && endDate != "" {
-			err = r.db.Order("date").Where("date < ? and user_uuid = ?", endDate, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created < ?", endDate).Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate != "" {
-			err = r.db.Order("date").Where("date > ? and date < ? and user_uuid = ?", stDate, endDate, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ? and date_created < ?", stDate, endDate).Find(&orders).Error
 			return orders, err
 		}
 	} else {
 		if stDate == "" && endDate == "" {
-			err = r.db.Order("date").Where("status = ? and user_uuid = ?", st, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("status = ?", st).Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate == "" {
-			err = r.db.Order("date").Where("date > ? and status = ? and user_uuid = ?", stDate, st, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ? and status = ?", stDate, st).Find(&orders).Error
 			return orders, err
 		} else if stDate == "" && endDate != "" {
-			err = r.db.Order("date").Where("date < ? and status = ? and user_uuid = ?", endDate, st, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created < ? and status = ?", endDate, st).Find(&orders).Error
 			return orders, err
 		} else if stDate != "" && endDate != "" {
-			err = r.db.Order("date").Where("date > ? and date < ? and status = ? and user_uuid = ?", stDate, endDate, st, uuid).Find(&orders).Error
+			err = r.db.Order("date_created").Where("date_created > ? and date_created < ? and status = ?", stDate, endDate, st).Find(&orders).Error
 			return orders, err
 		}
 	}
