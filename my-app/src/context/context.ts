@@ -17,6 +17,9 @@ export let orders_context: IOrder = {
     UUID: "",
     Pizzas: [""],
     UserUUID: "",
-    Date: "",
+    DateCreated: "",
+    DatePayed: "",
+    DateDeliveredStart: "",
+    DateDeliveredEnd: "",
     Status: "",
 }

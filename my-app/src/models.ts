@@ -16,6 +16,9 @@ export interface IOrder {
     UUID: string
     Pizzas: string[]
     UserUUID: string
-    Date: string
+    DateCreated: string
+    DatePayed: string
+    DateDeliveredStart: string
+    DateDeliveredEnd: string
     Status: string
 }

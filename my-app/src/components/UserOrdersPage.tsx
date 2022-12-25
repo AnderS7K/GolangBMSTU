@@ -119,23 +119,29 @@ export function UserOrdersPage() {
                     </div>
                 </div>
                 <div className="px-2 sm:px-0 pt-5 flex flex-col gap-0 mx-auto container">
-                    <div className="border-2 border-slate-300 -mb-1 rounded py-2  grid grid-cols-3">
+                    <div className="border-2 border-slate-300 -mb-1 rounded py-2  grid grid-cols-6">
                         <p className="place-self-center text-lg font-bold">
                             Пиццы
                         </p>
 
-                        <div className="place-self-center text-lg font-bold">
-                            <p className="place-self-center text-lg font-bold">
-                                Дата
-                            </p>
+                        <p className="place-self-center text-lg font-bold">
+                            Дата оформления
+                        </p>
+                        <p className="place-self-center text-lg font-bold">
+                            Дата оплаты
+                        </p>
+                        <p className="place-self-center text-lg font-bold">
+                            Дата передачи в доставку
+                        </p>
+                        <p className="place-self-center text-lg font-bold">
+                            Дата доставки
+                        </p>
 
-                        </div>
 
-                        <div className="place-self-center text-lg font-bold">
-                            <p className="place-self-center text-lg font-bold">
-                                Статус
-                            </p>
-                        </div>
+                        <p className="place-self-center text-lg font-bold">
+                            Статус
+                        </p>
+
                     </div>
                     {showOrders &&  state.order.map((order: IOrder, key: any) => {
                         return (
