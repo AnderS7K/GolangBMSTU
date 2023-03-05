@@ -4,6 +4,7 @@ import (
 	"awesomeProject/internal/app/role"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 )
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -29,8 +30,20 @@ func (a *Application) StartServer() {
 
 	r.Use(CORSMiddleware())
 
+	r.LoadHTMLGlob("templates/*")
+
+	r.GET("/templates", func(c *gin.Context) {
+		pizzas, _ := a.repo.GetPizzasList()
+		c.HTML(http.StatusOK, "pizzas.tmpl", gin.H{
+			"Pizzas": pizzas,
+		})
+	})
+
+	r.GET("/submit", a.TemplateDeletePizza)
+
 	r.GET("/pizzas", a.GetList)
 	r.GET("/pizzas/:uuid", a.GetPizza)
+	r.GET("/orders/:firstDate/:secondDate", a.GetOrdersSum)
 
 	r.GET("/pizzas/price/:uuid", a.GetPizzaPrice)
 

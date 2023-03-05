@@ -143,3 +143,20 @@ func (r *Repository) GetOrdersByUser(uuid uuid.UUID, stDate, endDate, status str
 
 	return orders, nil
 }
+
+func (r *Repository) GetOrdersSum(firstDate, secondDate string) (uint64, []string, error) {
+	var orders []ds.Order
+	var err error
+	var list []string
+	err = r.db.Order("date_created").Where("date_payed BETWEEN ? AND ?", firstDate, secondDate).Find(&orders).Error
+	var sum, price uint64
+	log.Println(orders)
+	for _, order := range orders {
+		for _, pizza := range order.Pizzas {
+			price, err = r.GetPizzaPriceByName(pizza)
+			sum += price
+		}
+		list = append(list, order.GetDatePayedAndStatus())
+	}
+	return sum, list, err
+}

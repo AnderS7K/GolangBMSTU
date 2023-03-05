@@ -50,6 +50,18 @@ func (r *Repository) GetPizzaPrice(uuid uuid.UUID) (uint64, error) {
 	return pizza.Price, nil
 }
 
+func (r *Repository) GetPizzaPriceByName(name string) (uint64, error) {
+	var pizza ds.Pizza
+	err := r.db.First(&pizza, "name = ?", name).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
+	}
+	return pizza.Price, nil
+}
+
 func (r *Repository) ChangePizza(uuid uuid.UUID, pizza ds.Pizza) (int, error) {
 	pizza.UUID = uuid
 	err := r.db.Model(&pizza).Updates(ds.Pizza{Name: pizza.Name, Price: pizza.Price, Description: pizza.Description, Image: pizza.Image}).Error

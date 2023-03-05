@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>List of all pizzas</title>
+</head>
+<body>
+<table>
+<tr>
+<td>Name</td>
+<td>Price</td>
+<td>Description</td>
+<td>Image</td>
+</tr>
+{{ range .Pizzas}}
+<tr>
+<td>{{ .Name }}</td>
+<td>{{ .Price }}</td>
+<td>{{ .Description }}</td>
+<td>{{ .Image }}</td>
+<td><form action="/submit" method="GET"></td>
+<td><input type="text" id="uuid" name="uuid" value={{ .UUID }}></td>
+<td><input type="submit"  value="Удалить"></td>
+<td></form></td>
+</tr>
+{{ end }}
+</table>
+</body>
+</html>

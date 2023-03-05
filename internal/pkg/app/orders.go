@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
+	"strconv"
 )
 
 func (a *Application) AddOrder(gCtx *gin.Context) {
@@ -59,6 +60,30 @@ func (a *Application) GetOrders(gCtx *gin.Context) {
 		return
 	}
 	gCtx.JSON(http.StatusOK, resp)
+
+}
+
+func (a *Application) GetOrdersSum(gCtx *gin.Context) {
+	firstDate := gCtx.Param("firstDate")
+	secondDate := gCtx.Param("secondDate")
+	sum, list, err := a.repo.GetOrdersSum(firstDate, secondDate)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "can`t get a list",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
+			})
+		return
+	}
+	sumString := strconv.Itoa(int(sum))
+	var allList string
+	for _, ord := range list {
+		allList += "\n Заказ" + ord
+	}
+	final := "Общая сумма заказов: " + sumString + "\n Все заказы: " + allList
+	gCtx.JSON(http.StatusOK, final)
 
 }
 

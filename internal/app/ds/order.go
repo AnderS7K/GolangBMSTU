@@ -16,3 +16,8 @@ type Order struct {
 	DateDeliveredEnd   time.Time      `db:"date_delivered_end" gorm:"type:timestamp"`
 	Status             string         `db:"status"`
 }
+
+func (o *Order) GetDatePayedAndStatus() string {
+	date := o.DatePayed.Format("2006-01-02 15:04:05")
+	return date + " " + o.Status
+}

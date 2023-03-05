@@ -165,6 +165,49 @@ func (a *Application) DeletePizza(gCtx *gin.Context) {
 
 }
 
+func (a *Application) TemplateDeletePizza(gCtx *gin.Context) {
+	param, _ := gCtx.GetQuery("uuid")
+	UUID, err := uuid.Parse(param)
+	pizzaName, _ := a.repo.GetPizzaName(UUID.String())
+	if err != nil {
+		gCtx.JSON(
+			http.StatusBadRequest,
+			&models.ModelError{
+				Description: "Invalid UUID format",
+				Error:       models.Err400,
+				Type:        models.TypeClientReq,
+			})
+		return
+	}
+	resp, err := a.repo.DeletePizza(UUID)
+	if err != nil {
+		if resp == 404 {
+			gCtx.JSON(
+				http.StatusNotFound,
+				&models.ModelError{
+					Description: "UUID Not Found",
+					Error:       models.Err404,
+					Type:        models.TypeClientReq,
+				})
+			return
+		} else {
+			gCtx.JSON(
+				http.StatusInternalServerError,
+				&models.ModelError{
+					Description: "Change failed",
+					Error:       models.Err500,
+					Type:        models.TypeInternalReq,
+				})
+			return
+		}
+	}
+
+	gCtx.HTML(http.StatusOK, "submit.tmpl", gin.H{
+		"Pizza": pizzaName,
+	})
+
+}
+
 func (a *Application) AddPizza(gCtx *gin.Context) {
 	pizza := ds.Pizza{}
 	err := gCtx.BindJSON(&pizza)
