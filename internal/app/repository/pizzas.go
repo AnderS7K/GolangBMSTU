@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"net/url"
 )
 
 func (r *Repository) GetPizzasList() ([]ds.Pizza, error) {
@@ -86,4 +87,20 @@ func (r *Repository) DeletePizza(uuid uuid.UUID) (int, error) {
 		return 500, err
 	}
 	return 0, nil
+}
+
+func (r *Repository) GetFilteredPizzas(name, minPrice, maxPrice string) ([]ds.Pizza, error) {
+	var pizzas []ds.Pizza
+	var err error
+	nm, _ := url.QueryUnescape(name)
+	nm = "%" + nm + "%"
+	if nm == "" {
+		err = r.db.Order("price desc").Where("price > ? and price < ?", minPrice, maxPrice).Find(&pizzas).Error
+		return pizzas, err
+	} else {
+		err = r.db.Order("price desc").Where("price > ? and price < ? and name LIKE ?", minPrice, maxPrice, nm).Find(&pizzas).Error
+		return pizzas, err
+	}
+
+	return pizzas, err
 }

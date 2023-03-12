@@ -41,7 +41,8 @@ func (a *Application) StartServer() {
 
 	r.GET("/submit", a.TemplateDeletePizza)
 
-	r.GET("/pizzas", a.GetList)
+	//r.GET("/pizzas", a.GetList)
+	r.GET("/pizzas", a.GetFilteredPizzas)
 	r.GET("/pizzas/:uuid", a.GetPizza)
 	r.GET("/orders/:firstDate/:secondDate", a.GetOrdersSum)
 

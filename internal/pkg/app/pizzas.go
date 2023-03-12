@@ -256,3 +256,22 @@ func (a *Application) GetPizza(gCtx *gin.Context) {
 
 	gCtx.JSON(http.StatusOK, resp)
 }
+
+func (a *Application) GetFilteredPizzas(gCtx *gin.Context) {
+	minPrice := gCtx.Query("min_price")
+	maxPrice := gCtx.Query("max_price")
+	name := gCtx.Query("name")
+	resp, err := a.repo.GetFilteredPizzas(name, minPrice, maxPrice)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "can`t get a list",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
+			})
+		return
+	}
+	gCtx.JSON(http.StatusOK, resp)
+
+}
