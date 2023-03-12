@@ -10,6 +10,7 @@ import {AddPizza} from "./components/AddPizza";
 import {OrderPage} from "./components/OrderPage";
 import {ChangePizza} from "./components/ChangePizza";
 import {UserOrdersPage} from "./components/UserOrdersPage";
+import {PizzaDescription} from "./components/PizzaPage";
 
 export const ENDPOINT = "http://localhost:8080"
 
@@ -18,7 +19,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/pizzas" element={<HomePage/>}/>
-          <Route path="/info" element={<Info/>}/>
+            <Route path="/description" element={<PizzaDescription/>}/>
+            <Route path="/info" element={<Info/>}/>
           <Route path="/cart" element={<CartPage/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/registration" element={<Registration/>}/>

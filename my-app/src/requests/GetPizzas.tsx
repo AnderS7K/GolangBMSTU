@@ -4,7 +4,7 @@ import {getJson} from "../modules";
 const initialState = {pizzas: []}
 const success = "Success"
 
-function reducer(state: any, action: { type: any; pizzas: any; }) {
+export function reducer(state: any, action: { type: any; pizzas: any; }) {
     switch (action.type) {
         case success:
             return {
